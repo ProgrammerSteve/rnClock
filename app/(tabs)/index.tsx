@@ -11,20 +11,36 @@ import {
   Path,
   Circle,
 } from "@shopify/react-native-skia";
-import { HelloWave } from "@/components/HelloWave";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
+
 import { Dimensions, LayoutChangeEvent } from "react-native";
 import { useRotate } from "@/hooks/useRotate";
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
+
+interface ClockNumbersProps{
+  width:number;
+  height:number;
+  textRadius:number;
+}
+const ClockNumbers=({width,height,textRadius}:ClockNumbersProps)=>{
+  return Array.from({ length: 12 }).map((_,i)=>{
+    const fontSize = 10;
+    const font = useFont(require("../../assets/fonts/SpaceMono-Regular.ttf"), fontSize);
+    let angle=60-30*i
+    let textNumber=`${i+1}`
+    return  <Text
+      key={`clockNumber-${i}`}
+      x={width*0.5+Math.cos(Math.PI*(angle)/180)*textRadius}
+      y={height*0.5-Math.sin(Math.PI*(angle)/180)*textRadius}
+      text={textNumber}
+      color={"red"}
+      font={font}
+    />
+  })
+}
+
 export default function HomeScreen() {
   const radius = 120;
-
-  const fontSize = 10;
-  const font = useFont(require("../../assets/fonts/SpaceMono-Regular.ttf"), fontSize);
-
   const [canvasLayout, setCanvasLayout] = useState({
     x: 0,
     y: 0,
@@ -118,91 +134,7 @@ export default function HomeScreen() {
           />
         </Group>
         <Group>
-
-         <Text
-        x={canvasLayout.width*0.5+Math.cos(Math.PI*60/180)*textRadius}
-        y={canvasLayout.height*0.5-Math.sin(Math.PI*60/180)*textRadius}
-        text="1"
-        color={"red"}
-        font={font}
-      />
-         <Text
-        x={canvasLayout.width*0.5+Math.cos(Math.PI*30/180)*textRadius}
-        y={canvasLayout.height*0.5-Math.sin(Math.PI*30/180)*textRadius}
-        text="2"
-        color={"red"}
-        font={font}
-      />
-         <Text
-        x={canvasLayout.width*0.5+Math.cos(Math.PI*0/180)*textRadius}
-        y={canvasLayout.height*0.5-Math.sin(Math.PI*0/180)*textRadius}
-        text="3"
-        color={"white"}
-        font={font}
-      />
-         <Text
-        x={canvasLayout.width*0.5+Math.cos(Math.PI*-30/180)*textRadius}
-        y={canvasLayout.height*0.5-Math.sin(Math.PI*-30/180)*textRadius}
-        text="4"
-        color={"red"}
-        font={font}
-      />
-         <Text
-        x={canvasLayout.width*0.5+Math.cos(Math.PI*-60/180)*textRadius}
-        y={canvasLayout.height*0.5-Math.sin(Math.PI*-60/180)*textRadius}
-        text="5"
-        color={"red"}
-        font={font}
-      />
-         <Text
-        x={canvasLayout.width*0.5+Math.cos(Math.PI*-90/180)*textRadius}
-        y={canvasLayout.height*0.5-Math.sin(Math.PI*-90/180)*textRadius}
-        text="6"
-        color={"white"}
-        font={font}
-      />
-         <Text
-        x={canvasLayout.width*0.5+Math.cos(Math.PI*-120/180)*textRadius}
-        y={canvasLayout.height*0.5-Math.sin(Math.PI*-120/180)*textRadius}
-        text="7"
-        color={"red"}
-        font={font}
-      />
-         <Text
-        x={canvasLayout.width*0.5+Math.cos(Math.PI*-150/180)*textRadius}
-        y={canvasLayout.height*0.5-Math.sin(Math.PI*-150/180)*textRadius}
-        text="8"
-        color={"red"}
-        font={font}
-      />
-         <Text
-        x={canvasLayout.width*0.5+Math.cos(Math.PI*-180/180)*textRadius}
-        y={canvasLayout.height*0.5-Math.sin(Math.PI*-180/180)*textRadius}
-        text="9"
-        color={"white"}
-        font={font}
-      />
-         <Text
-        x={canvasLayout.width*0.5+Math.cos(Math.PI*-210/180)*textRadius}
-        y={canvasLayout.height*0.5-Math.sin(Math.PI*-210/180)*textRadius}
-        text="10"
-        color={"red"}
-        font={font}
-      />
-         <Text
-        x={canvasLayout.width*0.5+Math.cos(Math.PI*-240/180)*textRadius}
-        y={canvasLayout.height*0.5-Math.sin(Math.PI*-240/180)*textRadius}
-        text="11"
-        color={"red"}
-        font={font}
-      />
-         <Text
-        x={canvasLayout.width*0.5+Math.cos(Math.PI*-270/180)*textRadius}
-        y={canvasLayout.height*0.5-Math.sin(Math.PI*-270/180)*textRadius}
-        text="12"
-        color={"white"}
-        font={font}
-      />
+        <ClockNumbers width={canvasLayout.width} height={canvasLayout.height} textRadius={textRadius}/>
         </Group>
       </Canvas>
     </View>
