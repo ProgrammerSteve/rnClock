@@ -10,12 +10,13 @@ import {
   vec,
   Path,
   Circle,
+  Paint,
+  Shadow,
 } from "@shopify/react-native-skia";
 
 import { Dimensions, LayoutChangeEvent } from "react-native";
 import { useRotate } from "@/hooks/useRotate";
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
-
 
 interface ClockNumbersProps{
   width:number;
@@ -24,7 +25,7 @@ interface ClockNumbersProps{
 }
 const ClockNumbers=({width,height,textRadius}:ClockNumbersProps)=>{
   return Array.from({ length: 12 }).map((_,i)=>{
-    const fontSize = 10;
+    const fontSize = 13;
     const font = useFont(require("../../assets/fonts/SpaceMono-Regular.ttf"), fontSize);
     let angle=60-30*i
     let textNumber=`${i+1}`
@@ -33,7 +34,7 @@ const ClockNumbers=({width,height,textRadius}:ClockNumbersProps)=>{
       x={width*0.5+Math.cos(Math.PI*(angle)/180)*textRadius}
       y={height*0.5-Math.sin(Math.PI*(angle)/180)*textRadius}
       text={textNumber}
-      color={"red"}
+      color={"black"}
       font={font}
     />
   })
@@ -79,9 +80,6 @@ export default function HomeScreen() {
   const clockRadius=canvasLayout.width*0.5-10
   const textRadius=canvasLayout.width*0.5-40
 
-  // const skCirclePath = Skia.Path.Make();
-  // skCirclePath.addCircle((canvasLayout.width / 2), (canvasLayout.height / 2), canvasLayout.width / 2);
-
   return (
     <View style={styles.container}>
       <Canvas
@@ -95,8 +93,17 @@ export default function HomeScreen() {
 
         }}
       >
-        <Circle cx={canvasLayout.width*0.5} cy={canvasLayout.height*0.5} r={clockRadius} color={"grey"}/>
-        <Circle cx={canvasLayout.width*0.5} cy={canvasLayout.height*0.5} r={clockRadius-5} color={"black"}/>
+        <Group>
+          <Circle cx={canvasLayout.width*0.5} cy={canvasLayout.height*0.5} r={clockRadius} color={"grey"}/>
+        </Group>
+        <Group>
+          <Circle cx={canvasLayout.width*0.5} cy={canvasLayout.height*0.5} r={clockRadius-5}>
+          <Paint color={"#f0f0f0"}>
+          <Shadow dx={8} dy={8} blur={5} color="rgba(0, 0, 0, 0.2)"/>
+          <Shadow dx={-8} dy={-8} blur={5} color="rgba(255, 255, 255, 0.7)"/>
+          </Paint>
+          </Circle>
+        </Group>
         <Group
           transform={secondsStyle}
           origin={vec(canvasLayout.width * 0.5, canvasLayout.height * 0.5)}
@@ -136,6 +143,7 @@ export default function HomeScreen() {
         <Group>
         <ClockNumbers width={canvasLayout.width} height={canvasLayout.height} textRadius={textRadius}/>
         </Group>
+        <Circle cx={canvasLayout.width*0.5} cy={canvasLayout.height*0.5} r={7} color={"grey"}/>
       </Canvas>
     </View>
   );
@@ -144,6 +152,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor:"white",
     justifyContent: "center",
     alignContent: "center",
   },
