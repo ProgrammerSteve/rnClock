@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Platform, View } from "react-native";
+import { Image, StyleSheet, Platform, View, Text as RnText } from "react-native";
 import { useState, useEffect, useCallback, useRef } from "react";
 
 import {
@@ -53,6 +53,34 @@ export default function HomeScreen() {
     const { x, y, width, height } = event.nativeEvent.layout;
     setCanvasLayout({ x, y, width, height });
   }, []);
+
+  const [time, setTime] = useState(new Date());
+  const timeRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    const startTimer = () => {
+      timeRef.current = setInterval(() => {
+        setTime(new Date());
+      }, 1000);
+    };
+
+    startTimer();
+
+    // Cleanup the timer when the component unmounts
+    return () => {
+      if (timeRef.current) {
+        clearInterval(timeRef.current);
+      }
+    };
+  }, []);
+
+  const formatTime = (date: Date) => {
+    const pmOrAm=date.getHours()>11?"PM":"AM"
+    const hours = String(date.getHours()%12).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}${pmOrAm}`;
+  };
+
 
   const secondsPath = Skia.Path.Make();
   secondsPath.moveTo(canvasLayout.width * 0.5, canvasLayout.height * 0.5);
@@ -145,6 +173,12 @@ export default function HomeScreen() {
         </Group>
         <Circle cx={canvasLayout.width*0.5} cy={canvasLayout.height*0.5} r={7} color={"grey"}/>
       </Canvas>
+
+      <View style={styles.timeContainer}>
+      <RnText style={styles.timeText}>
+        {formatTime(time)}
+      </RnText>
+      </View>
     </View>
   );
 }
@@ -156,4 +190,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignContent: "center",
   },
+  timeContainer: {
+    height:120,
+    justifyContent: "center",
+    alignContent: "center",
+  },
+  timeText:{
+    textAlign:"center",
+    fontWeight:"700",
+    fontSize:32
+  }
 });
